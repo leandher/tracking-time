@@ -15,23 +15,85 @@
   background: #f0f0f5;
   box-shadow: 0 0 100px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  
+
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
 }
 
 .time-register-container .content section {
   width: 100%;
-  max-width: 380px;  
+  max-width: 480px;
+  margin-bottom: 32px;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.time-register-container .content section h1{
-  margin-bottom: 32px;
+.time-register-container .content section a {
+  margin-top: 0;
+}
+
+.time-register-container .content section h1 {
   font-size: 32px;
 }
 
 .time-register-container .content form {
   width: 100%;
   max-width: 450px;
+}
+
+.time-register-container .content form div {
+  display: flex;
+  flex-direction: column;
+  margin-right: 10px;
+}
+
+.time-register-container .content form button {
+  width: 100px;
+  font-size: 15px;
+}
+
+.time-register-container .content form .input-group {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 10px;
+}
+
+.time-register-container .content form .break-time {
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+.time-register-container .content form .break-time .button,
+.time-register-container .content form .break-time-list .button {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #dcdce6;
+  transition: border-color 0.2s;
+  line-height: initial;
+  margin-top: 0;
+  background-color: transparent;
+}
+
+.time-register-container .content form .break-time .button:hover,
+.time-register-container .content form .break-time-list .button:hover {
+  border-color: #999;
+}
+
+.time-register-container .content form .break-time-list .input-group {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.time-register-container .content form .total-working-hours,
+.time-register-container .content form .expected-working-hours {
+  margin: 20px 0;
+  
+  flex-direction: row;
+  justify-content: space-between;
 }
