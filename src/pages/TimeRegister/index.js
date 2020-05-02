@@ -14,35 +14,38 @@ const TimeRegister = () => {
   const [workingHours, setWorkingHours] = useState(0);
 
   const addBreakTime = () => {
-    setBreakTimes([...breakTimes, { id: uuid(), start: '00:00', end: '00:00' }]);
+    setBreakTimes([
+      ...breakTimes,
+      { id: uuid(), start: '00:00', end: '00:00' },
+    ]);
   };
 
   const removeBreakTime = (id) => {
     setBreakTimes(breakTimes.filter((bt) => bt.id !== id));
   };
 
-  const updateBreakTime = (index, field) => e => {
+  const updateBreakTime = (index, field) => (e) => {
     const newBreakTimes = [...breakTimes];
 
     newBreakTimes[index][field] = e.target.value;
 
     setBreakTimes(newBreakTimes);
-  }
+  };
 
-  const updateWorkTime = (field) => e => {
-    const newWorkTime = {...workTime};
+  const updateWorkTime = (field) => (e) => {
+    const newWorkTime = { ...workTime };
 
     newWorkTime[field] = e.target.value;
 
     setworkTime(newWorkTime);
-  }
+  };
 
   const updateWorkingHours = () => {
     const start = moment(workTime.start);
     const end = moment(workTime.end);
 
     console.log(start, end);
-  }
+  };
 
   useEffect(updateWorkingHours, [breakTimes, updateWorkingHours]);
 
@@ -57,8 +60,16 @@ const TimeRegister = () => {
         </section>
         <form>
           <div className="input-group">
-            <TimePicker label="Hora de entrada" value={workTime.start} onChange={updateWorkTime('start')} />
-            <TimePicker label="Hora de saída" value={workTime.end} onChange={updateWorkTime('end')} />
+            <TimePicker
+              label="Hora de entrada"
+              value={workTime.start}
+              onChange={updateWorkTime('start')}
+            />
+            <TimePicker
+              label="Hora de saída"
+              value={workTime.end}
+              onChange={updateWorkTime('end')}
+            />
           </div>
           <div className="break-time">
             <h3>Registrar pausas</h3>
@@ -69,8 +80,16 @@ const TimeRegister = () => {
           <div className="break-time-list">
             {breakTimes.map((bt, index) => (
               <div key={bt.id} className="input-group">
-                <TimePicker label="Hora de entrada" value={bt.start} onChange={updateBreakTime(index, 'start')} />
-                <TimePicker label="Hora de saída" value={bt.end} onChange={updateBreakTime(index, 'end')} />
+                <TimePicker
+                  label="Hora de entrada"
+                  value={bt.start}
+                  onChange={updateBreakTime(index, 'start')}
+                />
+                <TimePicker
+                  label="Hora de saída"
+                  value={bt.end}
+                  onChange={updateBreakTime(index, 'end')}
+                />
                 <button
                   className="button"
                   type="button"
@@ -82,12 +101,12 @@ const TimeRegister = () => {
             ))}
           </div>
           <div className="expected-working-hours">
-              <strong>Expectativa de horas trabalhadas:</strong>
-              <span>8h</span>
+            <strong>Expectativa de horas trabalhadas:</strong>
+            <span>8h</span>
           </div>
           <div className="total-working-hours">
-              <strong>Total de horas trabalhadas:</strong>
-              <span>{workingHours}h</span>
+            <strong>Total de horas trabalhadas:</strong>
+            <span>{workingHours}h</span>
           </div>
           <button className="button" type="submit">
             Registrar
