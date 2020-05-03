@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { FiLogIn } from 'react-icons/fi';
 
 import { useAuth } from '../../contexts/auth';
@@ -7,18 +7,15 @@ import { useAuth } from '../../contexts/auth';
 import './styles.css';
 
 const Login = () => {
-  const { login, signed } = useAuth();
+  const { login } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  const history = useHistory();
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     await login({ email, password });
-    history.push('/home');
   };
 
   return (

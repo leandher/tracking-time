@@ -7,20 +7,28 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   const login = async ({ email, password }) => {
-    const resp = await FirebaseService.login({ email, password });
-    const user = {
-      name: resp.displayName,
-      email: resp.email,
-      id: resp.uid,
-    };
-    setUser(user);
-    localStorage.setItem('user', JSON.stringify(user));
+    try {
+      const resp = await FirebaseService.login({ email, password });
+      const user = {
+        name: resp.displayName,
+        email: resp.email,
+        id: resp.uid,
+      };
+      localStorage.setItem('user', JSON.stringify(user));
+      setUser(user);
+    } catch (error) {
+      alert(error);
+    }
   };
 
   const logout = async () => {
-    await FirebaseService.logout();
-    setUser(null);
-    localStorage.setItem('user', null);
+    try {
+      await FirebaseService.logout();
+      localStorage.setItem('user', null);
+      setUser(null);
+    } catch (error) {
+      alert(error);
+    }
   };
 
   useEffect(() => {
@@ -35,9 +43,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider
-      value={{ signed: !!user, user, login, logout }}
-    >
+    <AuthContext.Provider value={{ signed: !!user, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
