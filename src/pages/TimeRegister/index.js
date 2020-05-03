@@ -62,7 +62,9 @@ const TimeRegister = () => {
     setWorkingHours(formatedHours);
   };
 
-  const save = () => {
+  const handleRegister = (e) => {
+    e.preventDefault();
+
     const registerObj = {
       registerDate,
       breakTimes,
@@ -84,7 +86,7 @@ const TimeRegister = () => {
             <FiArrowLeft size={28} />
           </Link>
         </section>
-        <form onSubmit={save}>
+        <form onSubmit={handleRegister}>
           <div className="register-date">
             <span>Dia do registro</span>
             <input type="date" value={registerDate} onChange={updateRegisterDate} />
