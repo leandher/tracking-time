@@ -13,6 +13,11 @@ const TimeRegister = () => {
   const [breakTimes, setBreakTimes] = useState([]);
   const [workTime, setworkTime] = useState({ start: '00:00', end: '00:00' });
   const [workingHours, setWorkingHours] = useState('0h');
+  const [registerDate, setRegisterDate] = useState(moment().format('YYYY-MM-DD'));
+
+  const updateRegisterDate = (e) => {
+    setRegisterDate(moment(e.target.value).format('YYYY-MM-DD'));
+  }
 
   const addBreakTime = () => {
     setBreakTimes([
@@ -57,7 +62,18 @@ const TimeRegister = () => {
     setWorkingHours(formatedHours);
   };
 
-  useEffect(updateWorkingHours, [breakTimes, updateWorkingHours]);
+  const save = () => {
+    const registerObj = {
+      registerDate,
+      breakTimes,
+      workTime,
+      workingHours,
+    }
+
+    console.log(registerObj);
+  }
+
+  useEffect(updateWorkingHours, [breakTimes, workTime]);
 
   return (
     <div className="time-register-container">
@@ -68,7 +84,11 @@ const TimeRegister = () => {
             <FiArrowLeft size={28} />
           </Link>
         </section>
-        <form>
+        <form onSubmit={save}>
+          <div className="register-date">
+            <span>Dia do registro</span>
+            <input type="date" value={registerDate} onChange={updateRegisterDate} />
+          </div>
           <div className="input-group">
             <TimePicker
               label="Hora de entrada"

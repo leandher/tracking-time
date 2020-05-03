@@ -97,3 +97,11 @@
   flex-direction: row;
   justify-content: space-between;
 }
+
+.time-register-container .content form .register-date {
+  margin: 10px 0;
+}
+
+.time-register-container .content form input[type="date"] {
+  width: 50%;
+}
