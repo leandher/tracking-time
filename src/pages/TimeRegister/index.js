@@ -2,16 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FiArrowLeft, FiPlus, FiX } from 'react-icons/fi';
 import { v4 as uuid } from 'uuid';
+import moment from 'moment';
+
 
 import { TimePicker } from '../components';
 
 import './styles.css';
-import moment from 'moment';
 
 const TimeRegister = () => {
   const [breakTimes, setBreakTimes] = useState([]);
-  const [workTime, setworkTime] = useState({ start: '08:00', end: '18:00' });
-  const [workingHours, setWorkingHours] = useState(0);
+  const [workTime, setworkTime] = useState({ start: '00:00', end: '00:00' });
+  const [workingHours, setWorkingHours] = useState('0h');
 
   const addBreakTime = () => {
     setBreakTimes([
@@ -41,10 +42,19 @@ const TimeRegister = () => {
   };
 
   const updateWorkingHours = () => {
-    const start = moment(workTime.start);
-    const end = moment(workTime.end);
+    const start = moment(workTime.start, 'HH:mm');
+    const end = moment(workTime.end, 'HH:mm');
 
-    console.log(start, end);
+    const diff = end.diff(start, 'm');
+    
+    const breakTime = breakTimes
+      .reduce((previous, bt) => previous + moment(bt.end, 'HH:mm').diff(moment(bt.start, 'HH:mm'), 'm'), 0);
+    
+    const duration = moment.utc().startOf('day').add(diff - breakTime, 'm');
+
+    const formatedHours = `${duration.format('H')}h${duration.minutes() ? duration.format('mm') : ''}`;
+
+    setWorkingHours(formatedHours);
   };
 
   useEffect(updateWorkingHours, [breakTimes, updateWorkingHours]);
@@ -106,7 +116,7 @@ const TimeRegister = () => {
           </div>
           <div className="total-working-hours">
             <strong>Total de horas trabalhadas:</strong>
-            <span>{workingHours}h</span>
+            <span>{workingHours}</span>
           </div>
           <button className="button" type="submit">
             Registrar
