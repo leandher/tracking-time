@@ -1,24 +1,28 @@
-import { firebaseImpl as firebase } from '../utils/firebase';
+import { firebaseImpl as firebase, firebaseDatabase } from '../utils/firebase';
 
-export const login = ({ email, password }) => {
+const login = ({ email, password }) => {
   return firebase
     .auth()
     .signInWithEmailAndPassword(email, password)
     .then(({ user }) => {
       return user;
     })
-    .catch((error) => {throw error});
+    .catch((error) => {
+      throw error;
+    });
 };
 
-export const logout = () => {
+const logout = () => {
   return firebase
     .auth()
     .signOut()
     .then((resp) => resp)
-    .catch((error) => {throw error});
+    .catch((error) => {
+      throw error;
+    });
 };
 
-export const createUser = ({ email, password, name }) => {
+const createUser = ({ email, password, name }) => {
   return firebase
     .auth()
     .createUserWithEmailAndPassword(email, password)
@@ -26,13 +30,26 @@ export const createUser = ({ email, password, name }) => {
       await user.updateProfile({ displayName: name });
       return user;
     })
-    .catch((error) => {throw error});
+    .catch((error) => {
+      throw error;
+    });
 };
 
-export const saveWorkingTime = () => {};
+const saveWorkingTime = (workingTime) => {
+  const user = firebase.auth().currentUser;
+  const ref = firebaseDatabase.ref(user.uid).child('workingTime');
 
-export const getReports = () => {};
+  ref.set(workingTime);
+};
 
-const FirebaseService = { login, createUser, saveWorkingTime, getReports };
+const getReports = () => {};
+
+const FirebaseService = {
+  login,
+  logout,
+  createUser,
+  saveWorkingTime,
+  getReports,
+};
 
 export default FirebaseService;

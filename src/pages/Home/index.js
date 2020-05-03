@@ -1,21 +1,17 @@
 import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { FiPower } from 'react-icons/fi';
-import { logout } from '../../services/firebase-service';
 
 import './styles.css';
+import { useAuth } from '../../contexts/auth';
 
 const Home = () => {
+  const { logout, signed } = useAuth();
   const history = useHistory();
 
-  const handleLogout = () => {
-    logout().then(() => {
-      localStorage.setItem('userInfo', {});
-      localStorage.setItem('authenticationToken', '');
-
-      history.push('/');
-    })
-    .catch((error) => alert(error));
+  const handleLogout = async () => {
+    await logout();
+    history.push('/');
   }
   return (
     <div className="home-container">

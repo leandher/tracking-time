@@ -13,6 +13,4 @@ const config = {
 
 export const firebaseImpl = firebase.initializeApp(config);
 
-export const currentUser = firebase.auth().currentUser;
-
 export const firebaseDatabase = firebase.database();

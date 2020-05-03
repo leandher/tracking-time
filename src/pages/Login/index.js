@@ -2,36 +2,23 @@ import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { FiLogIn } from 'react-icons/fi';
 
+import { useAuth } from '../../contexts/auth';
+
 import './styles.css';
-import FirebaseService from '../../services/firebase-service';
 
 const Login = () => {
+  const { login, signed } = useAuth();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const history = useHistory();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    FirebaseService.login({ email, password })
-      .then(async (resp) => {
-        const token = await resp.getIdToken();
-        localStorage.setItem('authenticationToken', token);
-        localStorage.setItem(
-          'userInfo',
-          JSON.stringify({
-            name: resp.displayName,
-            email: resp.email,
-            id: resp.uid,
-          })
-        );
-
-        history.push('/home');
-      })
-      .catch((error) => {
-        alert(error);
-      });
+    await login({ email, password });
+    history.push('/home');
   };
 
   return (
