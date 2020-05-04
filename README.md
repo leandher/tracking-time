@@ -23,7 +23,7 @@ To Visit App:
 
 To build:
 
-`npm run build`
+`npm run build` 
 `yarn build`
 
 To deploy: 
