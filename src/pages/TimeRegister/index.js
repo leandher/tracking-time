@@ -145,7 +145,9 @@ const TimeRegister = () => {
       });
 
       setErrors({ ...errorsRef.current, ...validateErrors });
-      return !Object.keys(validateErrors).length;
+
+      return !Object.values(validateErrors)
+      .some(err => typeof err === 'object' ? Object.values(err).some(e => e) : err);
     };
 
     const isValid = validateFields();

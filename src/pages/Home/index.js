@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FiPower, FiPauseCircle } from 'react-icons/fi';
+import { FiPower, FiPauseCircle, FiTrash2 } from 'react-icons/fi';
 
 import { useAuth } from '../../contexts/auth';
 import FirebaseService from '../../services/firebase-service';
 import { Card, Spinner } from '../components';
 
 import './styles.css';
+import { toast } from 'react-toastify';
 
 const Home = () => {
   const {
@@ -26,6 +27,17 @@ const Home = () => {
     setWorkingTimeHistory(workingTimes);
     setIsLoading(false);
   };
+  
+  const deleteWorkTimeRegister = async (id) =>  {
+    setIsLoading(true);
+    try {
+      await FirebaseService.deleteWorkTimeRegister(id);
+      getWorkingTimeHistory();
+    } catch (error) {
+      toast.error(error?.message || error);
+      setIsLoading(false);
+    }
+  }
 
   useEffect(() => {
     getWorkingTimeHistory();
@@ -44,7 +56,7 @@ const Home = () => {
       </header>
       <div className="list-history">
         {isLoading && <Spinner isLoading={isLoading} />}
-        {workingTimeHistory.map((wth) => (
+        {!isLoading && workingTimeHistory.map((wth) => (
           <Card key={wth.id}>
             <div>
               <div>
@@ -73,6 +85,9 @@ const Home = () => {
                     ))}
                   </ul>
                 </div>
+                <button type="button" onClick={() => deleteWorkTimeRegister(wth.id)}>
+                  <FiTrash2 size={18} />
+                </button>
               </div>
               <strong>Total / Expected:</strong>
               <span>{wth.workingHours} / 8h</span>

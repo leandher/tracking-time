@@ -93,3 +93,13 @@
   font-size: 15px;
   color: #737388;
 }
+
+.home-container .list-history .card button {
+  align-self: flex-start;
+  border: 0;
+  background-color: transparent;
+}
+
+.home-container .list-history .card button:hover {
+  opacity: 0.8;
+}

@@ -78,6 +78,14 @@ const getWorkingTimeHistoryByDate = (date) => {
     });
 }
 
+const deleteWorkTimeRegister = (id) => {
+  const user = firebase.auth().currentUser;
+  if (!user) return false;
+  const ref = firebase.database().ref(user.uid).child('workingTime');
+
+  return ref.child(id).remove().catch(err => {throw err});
+}
+
 const FirebaseService = {
   login,
   logout,
@@ -85,6 +93,7 @@ const FirebaseService = {
   saveWorkingTime,
   getWorkingTimeHistory,
   getWorkingTimeHistoryByDate,
+  deleteWorkTimeRegister,
 };
 
 export default FirebaseService;
