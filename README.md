@@ -21,6 +21,13 @@ To Visit App:
 
 `localhost:3000`  
 
+To build:
+`npm run build`
+`yarn build`
+
+To deploy: 
+`firebase deploy`
+
 ## Live demo
 
 https://time-tracking-798b8.web.app
