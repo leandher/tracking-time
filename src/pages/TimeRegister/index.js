@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { FiArrowLeft, FiPlus, FiX } from 'react-icons/fi';
 import { v4 as uuid } from 'uuid';
@@ -13,6 +13,7 @@ import { toast } from 'react-toastify';
 const errorMessage = {
   isSameOrAfter: 'The start time must be before the end time!',
   isBetween: 'Break time must be between the check-in and check-out times!',
+  dateAlreadyExist: 'This date is already being used!',
 };
 
 const TimeRegister = () => {
@@ -27,7 +28,8 @@ const TimeRegister = () => {
   const history = useHistory();
 
   const updateRegisterDate = (e) => {
-    setRegisterDate(moment(e.target.value).format('YYYY-MM-DD'));
+    const date = moment(e.target.value).format('YYYY-MM-DD');
+    setRegisterDate(date);
   };
 
   const addBreakTime = () => {
@@ -60,6 +62,14 @@ const TimeRegister = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
 
+    const isFormInvalid = Object.values(errors)
+      .some(err => typeof err === 'object' ? Object.values(err).some(e => e) : err);
+
+    if(isFormInvalid) {
+      toast.error('The form has errors, fix them before save!');
+      return;
+    }
+
     const registerObj = {
       registerDate,
       breakTimes,
@@ -75,6 +85,21 @@ const TimeRegister = () => {
       toast.error(error?.message || error);
     }
   };
+
+  const errorsRef = useRef(errors);
+  errorsRef.current = errors;
+
+  useEffect(() => {
+    const validateDate = async () => {
+      const obj = await FirebaseService.getWorkingTimeHistoryByDate(
+        registerDate
+      );
+      const newErrors = { dateAlreadyExist: !!obj };
+      setErrors({ ...errorsRef.current, ...newErrors });
+    };
+
+    validateDate();
+  }, [registerDate]);
 
   useEffect(() => {
     const updateWorkingHours = () => {
@@ -107,30 +132,23 @@ const TimeRegister = () => {
       const end = moment(workTime.end, 'HH:mm');
       let validateErrors = {};
 
-      if (start.isSameOrAfter(end)) {
-        validateErrors['isSameOrAfter'] = true;
-      }
+      validateErrors['isSameOrAfter'] = start.isSameOrAfter(end);
 
       breakTimes.forEach((bt) => {
         const btStart = moment(bt.start, 'HH:mm');
         const btEnd = moment(bt.end, 'HH:mm');
-
-        if (btStart.isSameOrAfter(btEnd)) {
-          validateErrors[bt.id] = { isSameOrAfter: true };
-        }
-
-        if (!btStart.isBetween(start, end) || !btEnd.isBetween(start, end)) {
-          validateErrors[bt.id] = { ...validateErrors[bt.id], isBetween: true };
-        }
+        validateErrors[bt.id] = {
+          isSameOrAfter: btStart.isSameOrAfter(btEnd),
+          isBetween:
+            !btStart.isBetween(start, end) || !btEnd.isBetween(start, end),
+        };
       });
 
-      setErrors(validateErrors);
+      setErrors({ ...errorsRef.current, ...validateErrors });
       return !Object.keys(validateErrors).length;
     };
 
     const isValid = validateFields();
-
-    console.log(isValid);
 
     if (isValid) {
       updateWorkingHours();
@@ -156,6 +174,9 @@ const TimeRegister = () => {
               value={registerDate}
               onChange={updateRegisterDate}
               required
+            />
+            <Alert
+              message={errors.dateAlreadyExist && errorMessage.dateAlreadyExist}
             />
           </div>
           <div className="input-group">

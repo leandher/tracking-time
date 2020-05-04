@@ -59,12 +59,32 @@ const getWorkingTimeHistory = () => {
     });
 };
 
+const getWorkingTimeHistoryByDate = (date) => {
+  const user = firebase.auth().currentUser;
+  if (!user) return [];
+  const ref = firebase.database().ref(user.uid).child('workingTime');
+
+  return ref
+    .once('value')
+    .then((snapshot) => snapshot.toJSON())
+    .then((data) => {
+      const values = Object.values(data || {});
+      const keys = Object.keys(data || {});
+
+      return values.map((v, index) => ({ ...v, id: keys[index], breakTimes: Object.values(v.breakTimes || {})}));
+    })
+    .then(data => {
+      return data.find(d => d.registerDate === date);
+    });
+}
+
 const FirebaseService = {
   login,
   logout,
   createUser,
   saveWorkingTime,
   getWorkingTimeHistory,
+  getWorkingTimeHistoryByDate,
 };
 
 export default FirebaseService;
