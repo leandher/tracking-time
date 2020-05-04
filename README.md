@@ -22,10 +22,12 @@ To Visit App:
 `localhost:3000`  
 
 To build:
+
 `npm run build`
 `yarn build`
 
 To deploy: 
+
 `firebase deploy`
 
 ## Live demo
