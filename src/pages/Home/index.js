@@ -4,13 +4,14 @@ import { FiPower, FiPauseCircle } from 'react-icons/fi';
 
 import { useAuth } from '../../contexts/auth';
 import FirebaseService from '../../services/firebase-service';
-import { Card } from '../components';
+import { Card, Spinner } from '../components';
 
 import './styles.css';
 
 const Home = () => {
   const { logout } = useAuth();
   const [workingTimeHistory, setWorkingTimeHistory] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleLogout = async () => {
     await logout();
@@ -20,6 +21,7 @@ const Home = () => {
     const workingTimes = await FirebaseService.getWorkingTimeHistory();
 
     setWorkingTimeHistory(workingTimes);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -38,6 +40,7 @@ const Home = () => {
         </button>
       </header>
       <div className="list-history">
+        {isLoading && <Spinner isLoading={isLoading} />}
         {workingTimeHistory.map((wth) => (
           <Card key={wth.id}>
             <div>
@@ -59,7 +62,9 @@ const Home = () => {
                   <ul>
                     {wth.breakTimes.map((bt) => (
                       <li key={bt.id}>
-                        <strong><FiPauseCircle size={18} /></strong>
+                        <strong>
+                          <FiPauseCircle size={18} />
+                        </strong>
                         <span>{bt.start}</span>-<span>{bt.end}</span>
                       </li>
                     ))}
