@@ -1,4 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import { toast } from 'react-toastify';
+
 import FirebaseService from '../services/firebase-service';
 import firebase from '../utils/firebase';
 
@@ -18,7 +20,7 @@ export const AuthProvider = ({ children }) => {
       };
       setUser(user);
     } catch (error) {
-      alert(error);
+      toast.error(error.message);
     }
   };
 
@@ -27,7 +29,7 @@ export const AuthProvider = ({ children }) => {
       await FirebaseService.logout();
       setUser(null);
     } catch (error) {
-      alert(error);
+      toast.error(error.message);
     }
   };
 
@@ -39,13 +41,15 @@ export const AuthProvider = ({ children }) => {
           email: user.email,
           id: user.uid,
         });
-      } 
+      }
       setIsLoading(false);
     });
   }, []);
 
   return (
-    <AuthContext.Provider value={{ signed: !!user, user, isLoading, login, logout }}>
+    <AuthContext.Provider
+      value={{ signed: !!user, user, isLoading, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

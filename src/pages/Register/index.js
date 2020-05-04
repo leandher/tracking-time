@@ -5,16 +5,16 @@ import { FiArrowLeft } from 'react-icons/fi';
 import FirebaseService from '../../services/firebase-service';
 
 import './styles.css';
-
+import { toast } from 'react-toastify';
 
 const Register = () => {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  
+
   const history = useHistory();
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
 
     const data = {
@@ -23,25 +23,26 @@ const Register = () => {
       email,
     };
 
-    FirebaseService.createUser(data).then(() => {
+    try {
+      await FirebaseService.createUser(data);
       history.push('/');
-    }).catch(() => {
-
-    });
+    } catch (error) {
+      toast.error(error?.message || error);
+    }
   };
   return (
     <div className="register-container">
       <div className="content">
         <section>
-          <h1>Cadastro</h1>
+          <h1>Sign up</h1>
           <Link to="/" className="link">
             <FiArrowLeft size={16} />
-            Já tenho cadastro
+            Sign in
           </Link>
         </section>
         <form onSubmit={handleRegister}>
           <input
-            placeholder="Nome"
+            placeholder="Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
@@ -55,13 +56,13 @@ const Register = () => {
           />
           <input
             type="password"
-            placeholder="Senha"
+            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
           <button className="button" type="submit">
-            Cadastrar
+            Create account
           </button>
         </form>
       </div>

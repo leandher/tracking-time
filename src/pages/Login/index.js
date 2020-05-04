@@ -32,17 +32,17 @@ const Login = () => {
           />
           <input
             type="password"
-            placeholder="Senha"
+            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
           <button className="button" type="submit">
-            Entrar
+            Sign in
           </button>
           <Link to="/register" className="link">
             <FiLogIn size={16} />
-            Cadastrar
+            Sign up
           </Link>
         </form>
       </section>

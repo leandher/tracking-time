@@ -9,7 +9,10 @@ import { Card, Spinner } from '../components';
 import './styles.css';
 
 const Home = () => {
-  const { logout } = useAuth();
+  const {
+    logout,
+    user: { name },
+  } = useAuth();
   const [workingTimeHistory, setWorkingTimeHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -31,9 +34,9 @@ const Home = () => {
   return (
     <div className="home-container">
       <header>
-        <span>Bem vindo!</span>
+        <span>Welcome, {name}!</span>
         <Link className="button" to="/time-register">
-          Registrar horas
+          Register time
         </Link>
         <button type="button" onClick={handleLogout}>
           <FiPower size={18} />
@@ -46,19 +49,19 @@ const Home = () => {
             <div>
               <div>
                 <div>
-                  <strong>Data:</strong>
+                  <strong>Date:</strong>
                   <span>{wth.registerDate}</span>
                 </div>
                 <div>
-                  <strong>Hora de entrada:</strong>
+                  <strong>Check-in:</strong>
                   <span>{wth.workTime?.start}</span>
                 </div>
                 <div>
-                  <strong>Hora de saída:</strong>
+                  <strong>Check-out:</strong>
                   <span>{wth.workTime?.end}</span>
                 </div>
                 <div className="list-breaks">
-                  {!!wth.breakTimes?.length && <strong>Pausas:</strong>}
+                  {!!wth.breakTimes?.length && <strong>Breaks:</strong>}
                   <ul>
                     {wth.breakTimes.map((bt) => (
                       <li key={bt.id}>
@@ -71,7 +74,7 @@ const Home = () => {
                   </ul>
                 </div>
               </div>
-              <strong>Total trabalhado / Esperado:</strong>
+              <strong>Total / Expected:</strong>
               <span>{wth.workingHours} / 8h</span>
             </div>
           </Card>

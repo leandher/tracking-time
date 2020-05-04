@@ -8,10 +8,11 @@ import FirebaseService from '../../services/firebase-service';
 import { Alert, TimePicker } from '../components';
 
 import './styles.css';
+import { toast } from 'react-toastify';
 
 const errorMessage = {
-  isSameOrAfter: 'A hora de início precisa ser antes da hora final!',
-  isBetween: 'As pausas precisam ser entre as horas de entrada e de saída!',
+  isSameOrAfter: 'The start time must be before the end time!',
+  isBetween: 'Break time must be between the check-in and check-out times!',
 };
 
 const TimeRegister = () => {
@@ -68,10 +69,10 @@ const TimeRegister = () => {
 
     try {
       await FirebaseService.saveWorkingTime(registerObj);
-      alert('Salvo com sucesso');
+      toast.success('Saved successfully!');
       history.push('/home');
     } catch (error) {
-      alert(error);
+      toast.error(error?.message || error);
     }
   };
 
@@ -142,14 +143,14 @@ const TimeRegister = () => {
     <div className="time-register-container">
       <div className="content">
         <section>
-          <h1>Registrar horas</h1>
+          <h1>Register Time</h1>
           <Link to="/home" className="link">
             <FiArrowLeft size={28} />
           </Link>
         </section>
         <form onSubmit={handleRegister}>
           <div className="register-date">
-            <span>Dia do registro</span>
+            <span>Date</span>
             <input
               type="date"
               value={registerDate}
@@ -159,13 +160,13 @@ const TimeRegister = () => {
           </div>
           <div className="input-group">
             <TimePicker
-              label="Hora de entrada"
+              label="Check-in"
               value={workTime.start}
               onChange={updateWorkTime('start')}
               required
             />
             <TimePicker
-              label="Hora de saída"
+              label="Check-out"
               value={workTime.end}
               onChange={updateWorkTime('end')}
               required
@@ -173,7 +174,7 @@ const TimeRegister = () => {
           </div>
           <Alert message={errors.isSameOrAfter && errorMessage.isSameOrAfter} />
           <div className="break-time">
-            <h3>Registrar pausas</h3>
+            <h3>Register break time</h3>
             <button className="button" type="button" onClick={addBreakTime}>
               <FiPlus size={18} color="#000" />
             </button>
@@ -183,13 +184,13 @@ const TimeRegister = () => {
               <div key={bt.id} className="break-time">
                 <div className="input-group">
                   <TimePicker
-                    label="Hora de início"
+                    label="Start time"
                     value={bt.start}
                     onChange={updateBreakTime(index, 'start')}
                     required
                   />
                   <TimePicker
-                    label="Hora de fim"
+                    label="End time"
                     value={bt.end}
                     onChange={updateBreakTime(index, 'end')}
                     required
@@ -214,15 +215,15 @@ const TimeRegister = () => {
             ))}
           </div>
           <div className="expected-working-hours">
-            <strong>Expectativa de horas trabalhadas:</strong>
+            <strong>Expected working hours:</strong>
             <span>8h</span>
           </div>
           <div className="total-working-hours">
-            <strong>Total de horas trabalhadas:</strong>
+            <strong>Total:</strong>
             <span>{workingHours}</span>
           </div>
           <button className="button" type="submit">
-            Salvar
+            Save
           </button>
         </form>
       </div>
