@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { FiArrowLeft, FiPlus, FiX } from 'react-icons/fi';
 import { v4 as uuid } from 'uuid';
 import moment from 'moment';
 
-
+import FirebaseService from '../../services/firebase-service';
 import { TimePicker } from '../components';
 
 import './styles.css';
@@ -15,9 +15,11 @@ const TimeRegister = () => {
   const [workingHours, setWorkingHours] = useState('0h');
   const [registerDate, setRegisterDate] = useState(moment().format('YYYY-MM-DD'));
 
+  const history = useHistory();
+
   const updateRegisterDate = (e) => {
     setRegisterDate(moment(e.target.value).format('YYYY-MM-DD'));
-  }
+  };
 
   const addBreakTime = () => {
     setBreakTimes([
@@ -51,18 +53,26 @@ const TimeRegister = () => {
     const end = moment(workTime.end, 'HH:mm');
 
     const diff = end.diff(start, 'm');
-    
-    const breakTime = breakTimes
-      .reduce((previous, bt) => previous + moment(bt.end, 'HH:mm').diff(moment(bt.start, 'HH:mm'), 'm'), 0);
-    
-    const duration = moment.utc().startOf('day').add(diff - breakTime, 'm');
 
-    const formatedHours = `${duration.format('H')}h${duration.minutes() ? duration.format('mm') : ''}`;
+    const breakTime = breakTimes.reduce(
+      (previous, bt) =>
+        previous + moment(bt.end, 'HH:mm').diff(moment(bt.start, 'HH:mm'), 'm'),
+      0
+    );
+
+    const duration = moment
+      .utc()
+      .startOf('day')
+      .add(diff - breakTime, 'm');
+
+    const formatedHours = `${duration.format('H')}h${
+      duration.minutes() ? duration.format('mm') : ''
+    }`;
 
     setWorkingHours(formatedHours);
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
 
     const registerObj = {
@@ -70,10 +80,16 @@ const TimeRegister = () => {
       breakTimes,
       workTime,
       workingHours,
-    }
+    };
 
-    console.log(registerObj);
-  }
+    try {
+      await FirebaseService.saveWorkingTime(registerObj);
+      alert('Salvo com sucesso');
+      history.push('/home');
+    } catch (error) {
+      alert(error);
+    }
+  };
 
   useEffect(updateWorkingHours, [breakTimes, workTime]);
 
@@ -89,7 +105,11 @@ const TimeRegister = () => {
         <form onSubmit={handleRegister}>
           <div className="register-date">
             <span>Dia do registro</span>
-            <input type="date" value={registerDate} onChange={updateRegisterDate} />
+            <input
+              type="date"
+              value={registerDate}
+              onChange={updateRegisterDate}
+            />
           </div>
           <div className="input-group">
             <TimePicker
@@ -113,12 +133,12 @@ const TimeRegister = () => {
             {breakTimes.map((bt, index) => (
               <div key={bt.id} className="input-group">
                 <TimePicker
-                  label="Hora de entrada"
+                  label="Hora de início"
                   value={bt.start}
                   onChange={updateBreakTime(index, 'start')}
                 />
                 <TimePicker
-                  label="Hora de saída"
+                  label="Hora de fim"
                   value={bt.end}
                   onChange={updateBreakTime(index, 'end')}
                 />
@@ -141,7 +161,7 @@ const TimeRegister = () => {
             <span>{workingHours}</span>
           </div>
           <button className="button" type="submit">
-            Registrar
+            Salvar
           </button>
         </form>
       </div>

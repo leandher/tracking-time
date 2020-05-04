@@ -48,7 +48,15 @@ const getWorkingTimeHistory = () => {
   if (!user) return [];
   const ref = firebase.database().ref(user.uid).child('workingTime');
 
-  return ref.once('value');
+  return ref
+    .once('value')
+    .then((snapshot) => snapshot.toJSON())
+    .then((data) => {
+      const values = Object.values(data);
+      const keys = Object.keys(data);
+
+      return values.map((v, index) => ({ ...v, id: keys[index], breakTimes: Object.values(v.breakTimes || {})}));
+    });
 };
 
 const FirebaseService = {
