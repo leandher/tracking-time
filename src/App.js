@@ -2,9 +2,9 @@ import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './contexts/auth';
 
-import './global.css';
-
 import Routes from './routes';
+
+import './global.css';
 
 function App() {
   return (

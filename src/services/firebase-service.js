@@ -1,4 +1,4 @@
-import { firebaseImpl as firebase, firebaseDatabase } from '../utils/firebase';
+import firebase from '../utils/firebase';
 
 const login = ({ email, password }) => {
   return firebase
@@ -37,19 +37,26 @@ const createUser = ({ email, password, name }) => {
 
 const saveWorkingTime = (workingTime) => {
   const user = firebase.auth().currentUser;
-  const ref = firebaseDatabase.ref(user.uid).child('workingTime');
+  const ref = firebase.database().ref(user.uid).child('workingTime');
+  var newChildRef = ref.push();
 
-  ref.set(workingTime);
+  return newChildRef.set(workingTime);
 };
 
-const getReports = () => {};
+const getWorkingTimeHistory = () => {
+  const user = firebase.auth().currentUser;
+  if (!user) return [];
+  const ref = firebase.database().ref(user.uid).child('workingTime');
+
+  return ref.once('value');
+};
 
 const FirebaseService = {
   login,
   logout,
   createUser,
   saveWorkingTime,
-  getReports,
+  getWorkingTimeHistory,
 };
 
 export default FirebaseService;

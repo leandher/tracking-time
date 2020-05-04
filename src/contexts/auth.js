@@ -1,10 +1,12 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import FirebaseService from '../services/firebase-service';
+import firebase from '../utils/firebase';
 
 const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const login = async ({ email, password }) => {
     try {
@@ -14,7 +16,6 @@ export const AuthProvider = ({ children }) => {
         email: resp.email,
         id: resp.uid,
       };
-      localStorage.setItem('user', JSON.stringify(user));
       setUser(user);
     } catch (error) {
       alert(error);
@@ -24,7 +25,6 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await FirebaseService.logout();
-      localStorage.setItem('user', null);
       setUser(null);
     } catch (error) {
       alert(error);
@@ -32,18 +32,20 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const storagedUser = JSON.parse(localStorage.getItem('user'));
-    if (storagedUser) {
-      setUser({
-        name: storagedUser.displayName,
-        email: storagedUser.email,
-        id: storagedUser.uid,
-      });
-    }
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        setUser({
+          name: user.displayName,
+          email: user.email,
+          id: user.uid,
+        });
+      } 
+      setIsLoading(false);
+    });
   }, []);
 
   return (
-    <AuthContext.Provider value={{ signed: !!user, user, login, logout }}>
+    <AuthContext.Provider value={{ signed: !!user, user, isLoading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
