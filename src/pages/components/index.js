@@ -1,4 +1,5 @@
+import Alert from './Alert';
 import Card from './Card';
 import TimePicker from './TimePicker';
 
-export { Card, TimePicker };
+export { Alert, Card, TimePicker };

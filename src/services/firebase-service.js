@@ -52,8 +52,8 @@ const getWorkingTimeHistory = () => {
     .once('value')
     .then((snapshot) => snapshot.toJSON())
     .then((data) => {
-      const values = Object.values(data);
-      const keys = Object.keys(data);
+      const values = Object.values(data || {});
+      const keys = Object.keys(data || {});
 
       return values.map((v, index) => ({ ...v, id: keys[index], breakTimes: Object.values(v.breakTimes || {})}));
     });

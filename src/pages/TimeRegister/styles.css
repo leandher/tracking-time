@@ -89,6 +89,10 @@
   align-items: center;
 }
 
+.time-register-container .content form .break-time-list .break-time {
+  flex-direction: column;
+}
+
 .time-register-container .content form .total-working-hours,
 .time-register-container .content form .expected-working-hours {
   margin: 20px 0;

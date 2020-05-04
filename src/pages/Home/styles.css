@@ -52,6 +52,7 @@
 
 .home-container .list-history .card div div div {
   flex-direction: column;
+  justify-content: flex-start;
 }
 
 .home-container .list-history .card div div .list-breaks {
@@ -73,6 +74,8 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+
+  margin-bottom: 5px;
 }
 
 .home-container .list-history .card div div .list-breaks li span {
@@ -80,7 +83,7 @@
 }
 
 .home-container .list-history .card strong {
-  font-size: 14;
+  font-size: 14px;
   color: #41414d;
 }
 

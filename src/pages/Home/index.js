@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FiPower } from 'react-icons/fi';
+import { FiPower, FiPauseCircle } from 'react-icons/fi';
 
 import { useAuth } from '../../contexts/auth';
 import FirebaseService from '../../services/firebase-service';
@@ -59,7 +59,7 @@ const Home = () => {
                   <ul>
                     {wth.breakTimes.map((bt) => (
                       <li key={bt.id}>
-                        <strong>Período:</strong>
+                        <strong><FiPauseCircle size={18} /></strong>
                         <span>{bt.start}</span>-<span>{bt.end}</span>
                       </li>
                     ))}
