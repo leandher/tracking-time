@@ -38,3 +38,7 @@ https://time-tracking-798b8.web.app
 One of the main challenges I ran into was Authentication. This lead me to spend a few time on a research spike into OAuth using Firebase. I created a Context using React Context Api to handle with auth process and keep user information.
 
 At the end of the day, the technologies implemented in this project are React, React-Router-Dom, MomentJS, React Spinners, React Toastify, Firebase for auth and database, and a significant amount of VanillaJS, JSX, and CSS. I chose to use the `create-react-app` boilerplate to minimize initial setup, but I have to eject to configure MomentJs.
+
+## Next Steps
+
+Build a node API to keep users and do auth instead of Firebase
